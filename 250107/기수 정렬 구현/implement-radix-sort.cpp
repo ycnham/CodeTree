@@ -1,70 +1,48 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
 int n;
 int arr[100000];
 
-int findMax(int arr[], int n)
+void RadixSort()
 {
-    int max = arr[0];
+    int p = 1;
     
-    for(int i = 1; i < n; i++)
+    for(int pos = 0; pos < 6; pos++)
     {
-        if(arr[i] < max)
+        vector<int> arr_new[10];
+
+        for(int i = 0; i < n; i++)
         {
-            max = arr[i];
+            int digit = (arr[i] / p) % 10;
+            arr_new[digit].push_back(arr[i]);
         }
+
+        int index = 0;
+
+        for(int i = 0; i < 10; i++)
+        {
+            for(int j = 0; j < (int) arr_new[i].size(); j++)
+            {
+                arr[index++] = arr_new[i][j];
+            }
+        }
+
+        p *= 10;
     }
-    return max;
 }
 
-void countingSort(int arr[], int n, int exp)
+int main()
 {
-    int output[n];
-    int count[10] = {0};
-
-    for(int i = 0; i < n; i++)
-    {
-        int digit = (arr[i] / exp) % 10;
-        count[digit]++;
-    }
-
-    for(int i = 1; i < 10; i++)
-    {
-        count[i] += count[i - 1];
-    }
-
-    for(int i = n - 1; i >= 0; i--)
-    {
-        int digit = (arr[i] / exp) % 10;
-        output[count[digit] - 1] = arr[i];
-        count[digit]--;
-    }
-
-    for(int i = 0; i < n; i++)
-    {
-        arr[i] = output[i];
-    }
-}
-
-void radixSort(int arr[], int n)
-{
-    int max = findMax(arr, n);
-
-    for(int exp = 1; max / exp > 0; exp *= 10)
-    {
-        countingSort(arr, n, exp);
-    }
-}
-
-int main() {
     cin >> n;
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++)
+    {
         cin >> arr[i];
     }
     
-    radixSort(arr, n);
+    RadixSort();
 
     for(int i = 0; i < n; i++)
     {
